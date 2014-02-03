@@ -68,11 +68,11 @@ int main(int argc, char **argv)
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
 
-/*  	FILE *fp = fopen("/var/run/xmpp-socket","w+");
-	if(fp!=NULL) {
-		fprintf(fp,"%d",getpid());
+	FILE *fp = fopen("/var/run/xmpp-socket.pid", "w+");
+	if (fp != NULL) {
+		fprintf(fp, "%d", getpid());
 		fclose(fp);
-	}*/
+	}
 
 	/*  Daemon-specific initialization goes here */
 

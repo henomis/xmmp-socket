@@ -50,11 +50,12 @@ test -x ${DAEMON} || exit 0
 PARAMS=""
 
 
-START="--start --chuid ${SERVER_USER} --quiet --exec ${DAEMON} --pidfile ${PIDFILE} -- ${PARAMS}"
+START="--start --quiet --exec ${DAEMON} --pidfile ${PIDFILE} -- ${PARAMS}"
+#START="--start --chuid ${SERVER_USER} --quiet --exec ${DAEMON} --pidfile ${PIDFILE} -- ${PARAMS}"
 
 case "$1" in
   start)
-	log_daemon_msg "Starting" "${NAME}"
+	#log_daemon_msg "Starting" "${NAME}"
 	log_begin_msg "Starting $DESC..."
     #mkdir -p /var/run/xmpp-socket
     #chown xmpp-socket /var/run/xmpp-socket
