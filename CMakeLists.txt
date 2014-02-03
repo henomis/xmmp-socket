@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (xmpp-socket)
-add_executable(xmpp-socket src/main.cpp)
+add_executable(xmpp-socket src/main.cpp src/handlers.h src/handlers.cpp)
 find_library(OPENSSL_LIB ssl $ENV{OPENSSL_LIB_PATH})
 target_link_libraries(xmpp-socket ${OPENSSL_LIB})
 
@@ -13,8 +13,8 @@ target_link_libraries(xmpp-socket ${CRYPTO_LIB})
 #LINK_DIRECTORIES(/usr/lib/)
 #TARGET_LINK_LIBRARIES(xmpp-socket strophe)
 target_link_libraries(xmpp-socket strophe)
-#target_link_libraries(xmpp-socket expat)
-#target_link_libraries(xmpp-socket resolv)
+target_link_libraries(xmpp-socket expat)
+target_link_libraries(xmpp-socket resolv)
 #target_link_libraries(xmpp-socket json-c)
 
 

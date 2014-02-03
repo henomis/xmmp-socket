@@ -25,6 +25,8 @@
 #include <syslog.h>
 #include <string.h>
 
+#include "handlers.h"
+
 
 int main(int argc, char **argv)
 {
@@ -75,13 +77,47 @@ int main(int argc, char **argv)
 	}
 
 	/*  Daemon-specific initialization goes here */
+	xmpp_ctx_t *ctx;
+	xmpp_conn_t *conn;
+	xmpp_log_t *log;
+	char *jid, *pass;
 
-	/*  The Big Loop */
-	while (1) {
-		/*  Do some task here ... */
 
-		sleep(30);	/*  wait 30 seconds */
-	}
+	jid = conf_get_xmpp_user();
+	pass = conf_get_xmpp_pass();
+
+	/* init library */
+	xmpp_initialize();
+
+	/* create a context */
+	log = xmpp_get_default_logger(XMPP_LEVEL_DEBUG);	/* pass NULL instead to silence output */
+	ctx = xmpp_ctx_new(NULL, log);
+
+	/* create a connection */
+	conn = xmpp_conn_new(ctx);
+
+	/* setup authentication information */
+	xmpp_conn_set_jid(conn, jid);
+	xmpp_conn_set_pass(conn, pass);
+
+	/* initiate connection */
+	xmpp_connect_client(conn, NULL, 0, conn_handler, ctx);
+
+
+	/* start server or client */
+		
+
+
+	/* enter the event loop - 
+	   our connect handler will trigger an exit */
+	xmpp_run(ctx);
+
+	/* release our connection and context */
+	xmpp_conn_release(conn);
+	xmpp_ctx_free(ctx);
+
+	/* final shutdown of the library */
+	xmpp_shutdown();	/*  The Big Loop */
 
 	return (EXIT_SUCCESS);
 }
