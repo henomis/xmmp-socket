@@ -1,0 +1,22 @@
+
+   +--------+       +-------------+         +---------+          +-------------+       +--------+
+   |        |       |             |        /           \         |             |       |        |
+   | server |O <----| xmpp-socket |----> O< XMPP SERVER >O <-----| xmpp-socket |O <----| client |
+   |        |       |             |        \           /         |             |       |        |
+   +--------+       +-------------+         +---------+          +-------------+       +--------+
+
+
+configuration file
+==================
+
+xmpp-socket=server:port
+xmpp-socket=client:port
+
+xmpp-jid=myjid@myserver.com
+xmpp-password=miapass
+
+
+library
+=======
+https://github.com/Zenol/sednl (socket / serializer)
+http://strophe.im/libstrophe/  (xmpp library)
