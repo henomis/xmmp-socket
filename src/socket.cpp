@@ -1,3 +1,6 @@
+#include "socket.h"
+
+#if 0
 void tcp_client(char *host, int port) 
 {
     try
@@ -43,3 +46,5 @@ void tcp_client(char *host, int port)
         return EXIT_FAILURE;
     }
 }
+
+#endif

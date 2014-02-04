@@ -15,109 +15,86 @@
  * =====================================================================================
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <unistd.h>
-#include <syslog.h>
-#include <string.h>
 
-#include "handlers.h"
+#include "utils.h"
+#include "xmpp.h"
+#include "socket.h"
 
+#include <signal.h>
+
+static int xmpp_pid = -1, net_pid = -1;
+
+void kill_children(int sig)
+{
+    if(xmpp_pid != -1)
+        kill(xmpp_pid, SIGKILL);
+    if(net_pid != -1)
+        kill(net_pid, SIGKILL);
+}
 
 int main(int argc, char **argv)
 {
 
-	/*  Our process ID and Session ID */
-	pid_t pid, sid;
+    if(Daemonize() != EXIT_SUCCESS)
+        exit(EXIT_FAILURE);
 
-	/*  Fork off the parent process */
-	pid = fork();
-	if (pid < 0) {
-		exit(EXIT_FAILURE);
-	}
-	/*  If we got a good PID, then
-	 *             we can exit the parent process. */
-	if (pid > 0) {
-		exit(EXIT_SUCCESS);
-	}
-
-	/*  Change the file mode mask */
-	umask(0);
-
-	/*  Open any logs here */
-
-	/*  Create a new SID for the child process */
-	sid = setsid();
-	if (sid < 0) {
-		/*  Log the failure */
-		exit(EXIT_FAILURE);
-	}
+    char *jid, *pass;
 
 
-
-	/*  Change the current working directory */
-	if ((chdir("/")) < 0) {
-		/*  Log the failure */
-		exit(EXIT_FAILURE);
-	}
-
-	/*  Close out the standard file descriptors */
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
-
-	FILE *fp = fopen("/var/run/xmpp-socket.pid", "w+");
-	if (fp != NULL) {
-		fprintf(fp, "%d", getpid());
-		fclose(fp);
-	}
-
-	/*  Daemon-specific initialization goes here */
-	xmpp_ctx_t *ctx;
-	xmpp_conn_t *conn;
-	xmpp_log_t *log;
-	char *jid, *pass;
+    signal(SIGTERM,kill_children);
 
 
-	jid = conf_get_xmpp_user();
-	pass = conf_get_xmpp_pass();
+    std::map<std::string, std::string> options;
 
-	/* init library */
-	xmpp_initialize();
+    std::ifstream ifs ("/etc/xmpp-socket.conf", std::ifstream::in);
+    parse(ifs,options);
 
-	/* create a context */
-	log = xmpp_get_default_logger(XMPP_LEVEL_DEBUG);	/* pass NULL instead to silence output */
-	ctx = xmpp_ctx_new(NULL, log);
-
-	/* create a connection */
-	conn = xmpp_conn_new(ctx);
-
-	/* setup authentication information */
-	xmpp_conn_set_jid(conn, jid);
-	xmpp_conn_set_pass(conn, pass);
-
-	/* initiate connection */
-	xmpp_connect_client(conn, NULL, 0, conn_handler, ctx);
+	/*  Daemon-specific initialization goes here */    
 
 
-	/* start server or client */
-		
+    std::map<std::string, std::string>::const_iterator it = options.find("xmpp-user");
+    if(it!=options.end())
+        jid = strdup(options["xmpp-user"].c_str());
+    else
+        exit(EXIT_FAILURE);
+    it = options.find("xmpp-pass");
+    if(it!=options.end())
+        pass = strdup(options["xmpp-pass"].c_str());
+    else
+        exit(EXIT_FAILURE);
 
 
-	/* enter the event loop - 
-	   our connect handler will trigger an exit */
-	xmpp_run(ctx);
+    /* xmpp child */
+    if((xmpp_pid = fork()) == 0){
+        do_xmpp(jid,pass);
+        exit(0);
+    } else {
+        // parent code here
+    }
 
-	/* release our connection and context */
-	xmpp_conn_release(conn);
-	xmpp_ctx_free(ctx);
 
-	/* final shutdown of the library */
-	xmpp_shutdown();	/*  The Big Loop */
+    /* net child */
+    if((net_pid = fork()) == 0){
+        /* if client */
+        //tcp_client();
+        /*else
+         *tcp_server();
+         */
+        while(1) {
+            sleep(1);
+        }
+        exit(0);
+    } else {
+        // parent code here
+    }
+
+
+    while(1) {
+        sleep(60);
+    }
+
+    free(jid);
+    free(pass);
 
 	return (EXIT_SUCCESS);
 }

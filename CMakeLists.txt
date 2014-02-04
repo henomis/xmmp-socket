@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project (xmpp-socket)
-add_executable(xmpp-socket src/main.cpp src/handlers.h src/handlers.cpp)
+AUX_SOURCE_DIRECTORY(src CTR_SOURCES)
+add_executable(xmpp-socket ${CTR_SOURCES})
+
 find_library(OPENSSL_LIB ssl $ENV{OPENSSL_LIB_PATH})
 target_link_libraries(xmpp-socket ${OPENSSL_LIB})
 
