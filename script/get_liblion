@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -e README.md ]
+then
+	echo "Getting liblion..."
+else
+	echo "Error!"
+fi
+
+cd build && wget http://www.lundman.net/ftp/liblion-2.6.tar.gz && tar vxzf liblion-2.6.tar.gz
+cd liblion-2.6 && ./configure && cd src && gcc *.c -DHAVE_CONFIG_H -I. -I..  -fPIC  -O2 -Wall -shared -o liblion.so

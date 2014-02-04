@@ -18,7 +18,7 @@ target_link_libraries(xmpp-socket ${CRYPTO_LIB})
 target_link_libraries(xmpp-socket strophe)
 target_link_libraries(xmpp-socket expat)
 target_link_libraries(xmpp-socket resolv)
-target_link_libraries(xmpp-socket socket)
+target_link_libraries(xmpp-socket lion)
 #target_link_libraries(xmpp-socket json-c)
 
 

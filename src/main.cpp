@@ -35,8 +35,9 @@ void kill_children(int sig)
 int main(int argc, char **argv)
 {
 
-    if(Daemonize() != EXIT_SUCCESS)
-        exit(EXIT_FAILURE);
+    if(argc == 1)
+        if(Daemonize() != EXIT_SUCCESS)
+            exit(EXIT_FAILURE);
 
     char *jid = NULL, *pass = NULL;
     bool is_server = false;

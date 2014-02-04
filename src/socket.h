@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <libsocket/libinetsocket.h>
+#include <lion.h>
 #ifdef __cplusplus
 }
 #endif

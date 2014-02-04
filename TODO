@@ -20,6 +20,7 @@ library
 =======
 https://github.com/Zenol/sednl (socket / serializer)
 http://strophe.im/libstrophe/  (xmpp library)
+http://lundman.net/wiki/index.php/LiON (socket lib)
 
 
 INSTALL
