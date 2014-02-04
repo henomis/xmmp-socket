@@ -20,3 +20,14 @@ library
 =======
 https://github.com/Zenol/sednl (socket / serializer)
 http://strophe.im/libstrophe/  (xmpp library)
+
+
+INSTALL
+=======
+
+$ ./script/get_libsocket
+$ cd build/libsocket/ && sudo make install && cd ..
+$ cd build 
+$ cmake ..
+$ make 
+$ sudo make install

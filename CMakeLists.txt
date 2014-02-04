@@ -9,6 +9,7 @@ target_link_libraries(xmpp-socket ${OPENSSL_LIB})
 find_library(CRYPTO_LIB crypto $ENV{CRYPTO_LIB_PATH})
 target_link_libraries(xmpp-socket ${CRYPTO_LIB})
 
+
 #find_library(EXPAT_LIB expat $ENV{EXPAT_LIB_PATH})
 #target_link_libraries(xmpp-socket ${EXPAT_LIB})
 
@@ -17,6 +18,7 @@ target_link_libraries(xmpp-socket ${CRYPTO_LIB})
 target_link_libraries(xmpp-socket strophe)
 target_link_libraries(xmpp-socket expat)
 target_link_libraries(xmpp-socket resolv)
+target_link_libraries(xmpp-socket socket)
 #target_link_libraries(xmpp-socket json-c)
 
 

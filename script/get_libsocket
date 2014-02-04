@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -e README.md ]
+then
+	echo "Getting libsocket..."
+else
+	echo "Error!"
+fi
+
+cd build && git clone https://github.com/dermesser/libsocket.git
+cd libsocket && cat CMakeLists.txt | sed -e 's/ADD_SUBDIRECTORY(C++\/)//g'|sed -e 's/ADD_DEPENDENCIES(socket++ socket)//g'  > CMakeLists.txt.tmp && mv CMakeLists.txt.tmp CMakeLists.txt && cmake . && make

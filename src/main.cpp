@@ -38,7 +38,10 @@ int main(int argc, char **argv)
     if(Daemonize() != EXIT_SUCCESS)
         exit(EXIT_FAILURE);
 
-    char *jid, *pass;
+    char *jid = NULL, *pass = NULL;
+    bool is_server = false;
+    char *socket_port = NULL;
+    char *socket_host = NULL;
 
 
     signal(SIGTERM,kill_children);
@@ -57,11 +60,29 @@ int main(int argc, char **argv)
         jid = strdup(options["xmpp-user"].c_str());
     else
         exit(EXIT_FAILURE);
+
     it = options.find("xmpp-pass");
     if(it!=options.end())
         pass = strdup(options["xmpp-pass"].c_str());
     else
         exit(EXIT_FAILURE);
+
+    it = options.find("socket-type");
+    if(it!=options.end())
+        is_server = (options["socket-type"].compare("server") == 0);
+    else
+        exit(EXIT_FAILURE);
+
+    it = options.find("socket-port");
+    if(it!=options.end())
+        socket_port = strdup(options["socket-type"].c_str());
+    else
+        exit(EXIT_FAILURE);
+
+    it = options.find("socket-host");
+    if(it!=options.end())
+        socket_host = strdup(options["socket-type"].c_str());
+
 
 
     /* xmpp child */
@@ -75,14 +96,11 @@ int main(int argc, char **argv)
 
     /* net child */
     if((net_pid = fork()) == 0){
-        /* if client */
-        //tcp_client();
-        /*else
-         *tcp_server();
-         */
-        while(1) {
-            sleep(1);
-        }
+        /* server */
+        if(is_server)
+            tcp_server(socket_port);
+        else
+            tcp_client(socket_host, socket_port);
         exit(0);
     } else {
         // parent code here
@@ -93,8 +111,12 @@ int main(int argc, char **argv)
         sleep(60);
     }
 
-    free(jid);
-    free(pass);
+    if(jid)
+        free(jid);
+    if(pass)
+        free(pass);
+    if(socket_host)
+        free(socket_host);
 
 	return (EXIT_SUCCESS);
 }
